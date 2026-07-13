@@ -210,3 +210,4 @@ InfluxDB (Data Storage)
 Grafana (Visualization Dashboard)
 ```
 ## Group Meeting photo
+![Group Photo](group_photo.png)
