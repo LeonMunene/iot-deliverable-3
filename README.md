@@ -209,3 +209,4 @@ InfluxDB (Data Storage)
         ▼
 Grafana (Visualization Dashboard)
 ```
+## Group Meeting photo
