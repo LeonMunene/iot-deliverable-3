@@ -15,11 +15,11 @@
 
 150767	Leon Bundi
 
-
-# Question a
-
 ## Simulation
-[Simulation link](https://wokwi.com/projects/468368687339859969](https://wokwi.com/projects/434113115355726849)
+
+[Open the Wokwi Simulation](https://wokwi.com/projects/434113115355726849)
+
+
 ![Simulation Photo](simulation_photo.png)
 
 
