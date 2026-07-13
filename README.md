@@ -15,7 +15,7 @@
 
 150767	Leon Bundi
 
-## Simulation
+## Wokwi Simulation
 
 [Open the Wokwi Simulation](https://wokwi.com/projects/434113115355726849)
 
@@ -23,54 +23,186 @@
 ![Simulation Photo](simulation_photo.png)
 
 
+## System Logic
 
+The ESP32 acts as the central controller of the system. It continuously collects environmental data, analyzes it, displays the results locally, and uploads it to the cloud for monitoring and visualization.
 
-## Physical prototype
-![Question A 2](WhatsApp%20Image%202026-07-02%20at%205.22.07%20PM.jpeg)
-### Challenges
+### Overall Workflow
 
-As illustrated in the screenshot, the MQ-5 gas sensor worked as expected and the results can be seen in the serial monitor. However, we could not get readings of humidity and temperature from the DHT-22 and the LCD was powering on but not displaying results.
+```text
+MQ-2 Gas Sensor ──┐
+                  │
+DHT22 Sensor ─────┼──► ESP32
+                  │
+                  ├──► LCD Display
+                  │
+                  ├──► Wi-Fi
+                  │
+                  ├──► InfluxDB (Cloud Storage)
+                  │
+                  └──► Grafana Dashboard (Visualization)
+```
 
-### Possible Solutions
+---
 
-We faced a similar problem (failing to read from DHT-22) in question b and discovered that adding a resistor when connecting the DHT-22 to the esp32 board solved the problem. Due to time we did not implement this in question a. However, we did in question b and were successful.
+## Step 1: Initialize the System
 
-For the LCD powering on but not displaying results, we tried exchanging with other LCDs but we were unable to resolve the issue. Perhaps adding a resistor too would solve the problem
+When the ESP32 starts, it performs the following tasks:
 
-# Question b
+- Initializes the DHT22 temperature and humidity sensor.
+- Initializes the MQ-2 gas sensor.
+- Initializes the 16×2 I2C LCD display.
+- Connects to the Wi-Fi network.
+- Establishes a connection to the InfluxDB cloud database.
 
-## Simulation
+Once all components are initialized successfully, the system begins monitoring the environment.
 
-### Board 1:
-[Question B Board 1 Simulation with MQ-5](https://wokwi.com/projects/468368958463897601](https://wokwi.com/projects/434113115355726849)
+---
 
-### Board 2:
-[Question B Board 2 Simulation with DHT-22](https://wokwi.com/projects/468369775687442433)
+## Step 2: Collect Sensor Data
 
+The ESP32 continuously reads data from two sensors:
 
-## Physical prototype
-![Question B 1](WhatsApp%20Image%202026-07-02%20at%205.57.42%20PM.jpeg)
-![Quesion B 2](WhatsApp%20Image%202026-07-02%20at%205.57.28%20PM.jpeg)
-### Demonstration Video
-[▶️ Watch the demonstration video](WhatsApp%20Video%202026-07-02%20at%205.57.35%20PM.mp4)
+- **MQ-2 Gas Sensor** – Measures the concentration of gases in the surrounding environment.
+- **DHT22 Sensor** – Measures temperature and humidity.
 
-### Explanation
-As illustrated in the demo video above which can be downloaded, the board with the MQ-5 sends its gas results to the board with DHT-22. Both the results of DHT-22 and MQ-5 are printed in the serial monitor.
-# Question c
+These readings represent the current environmental conditions.
 
-## Simulation
+---
 
-### Board 1:
-[Question C Board 1 Simulation](https://wokwi.com/projects/468249352594753537)
+## Step 3: Evaluate Environmental Conditions
 
-### Board 2:
-[Question C Board 2 Simulation](https://wokwi.com/projects/468252073689667585)
+The sensor readings are compared against predefined thresholds.
 
-### Explanation
-ESP32 Node 2 continuously monitors gas concentration levels using the MQ-5 sensor. The gas readings are published to an MQTT topic hosted on a public broker.
-ESP32 Node 1 subscribes to the same MQTT topic and receives gas concentration data in real time. Upon receiving the data, the node analyses the gas level and activates the relay whenever the gas concentration exceeds a predefined threshold.
-Additionally, ESP32 Node 1 measures temperature and humidity using the DHT22 sensor and publishes the readings to separate MQTT topics.
+### Air Level (Temperature & Humidity)
 
+| Air Level | Temperature | Humidity |
+|-----------|------------:|---------:|
+| Good | 22–30°C | 30–60% |
+| Normal | 30–40°C | 60–70% |
+| Bad | Outside these ranges | Outside these ranges |
 
-# Group Photo
-![Group photo](WhatsApp%20Image%202026-07-02%20at%205.59.22%20PM.jpeg)
+### Gas Level
+
+| Gas Sensor Reading | Gas Level |
+|-------------------:|-----------|
+| 0–1364 | Good |
+| 1365–2730 | Normal |
+| Above 2730 | Bad |
+
+---
+
+## Step 4: Determine Overall Air Quality
+
+The ESP32 combines both evaluations to determine the overall air quality.
+
+- If both the **Air Level** and **Gas Level** are **Good** or **Normal**, the environment is classified as **Good Air Quality**.
+- If either the **Air Level** or **Gas Level** is **Bad**, the environment is classified as **Bad Air Quality**.
+
+This provides users with a simple overall assessment instead of requiring them to interpret multiple sensor readings.
+
+---
+
+## Step 5: Display Results on the LCD
+
+The LCD cycles through the following information every few seconds:
+
+1. Gas sensor reading
+2. Temperature and humidity
+3. Air Level
+4. Gas Level
+5. Overall Air Quality
+
+This allows users to monitor the environment directly from the device without accessing the dashboard.
+
+---
+
+## Step 6: Store Data in InfluxDB
+
+After processing the sensor readings, the ESP32 sends the data to **InfluxDB**, where each measurement is stored with a timestamp.
+
+The following information is recorded:
+
+- Gas sensor value
+- Temperature
+- Humidity
+- Gas Level
+- Air Level
+- Overall Air Quality
+
+This creates a historical database that can be queried at any time.
+
+---
+
+## Step 7: Visualize Data in Grafana
+
+Grafana connects directly to InfluxDB and retrieves the stored sensor data.
+
+The dashboard displays:
+
+- Temperature trends over time
+- Humidity trends
+- Gas sensor readings
+- Current air quality status
+- Historical environmental data
+
+This enables users to monitor both real-time conditions and long-term environmental changes through interactive charts and graphs.
+
+---
+
+## Complete System Flow
+
+```text
+1. ESP32 starts
+        │
+        ▼
+2. Connect to Wi-Fi
+        │
+        ▼
+3. Read MQ-2 and DHT22 sensors
+        │
+        ▼
+4. Classify:
+      • Air Level
+      • Gas Level
+      • Overall Air Quality
+        │
+        ▼
+5. Display results on LCD
+        │
+        ▼
+6. Upload data to InfluxDB
+        │
+        ▼
+7. Grafana retrieves data from InfluxDB
+        │
+        ▼
+8. Dashboard displays real-time and historical environmental data
+```
+
+---
+
+## Why InfluxDB and Grafana?
+
+### InfluxDB
+
+InfluxDB is used as the cloud database for storing sensor readings. Every measurement is automatically timestamped, allowing environmental data to be stored and analyzed over time instead of being lost after each reading.
+
+### Grafana
+
+Grafana connects to InfluxDB to visualize the stored data through interactive dashboards. Users can view live sensor values, monitor historical trends, and quickly identify changes in environmental conditions.
+
+Together, they provide a complete IoT monitoring pipeline:
+
+```text
+ESP32 + Sensors
+        │
+        ▼
+Wi-Fi
+        │
+        ▼
+InfluxDB (Data Storage)
+        │
+        ▼
+Grafana (Visualization Dashboard)
+```
