@@ -20,11 +20,12 @@
 
 ## Simulation
 [Simulation link]([https://wokwi.com/projects/468368687339859969](https://wokwi.com/projects/434113115355726849))
+![Simulation Photo](simulation_photo.png)
+
 
 
 
 ## Physical prototype
-![PQuestion A 1](WhatsApp%20Image%202026-07-02%20at%205.57.49%20PM.jpeg)
 ![Question A 2](WhatsApp%20Image%202026-07-02%20at%205.22.07%20PM.jpeg)
 ### Challenges
 
