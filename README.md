@@ -149,6 +149,7 @@ The dashboard displays:
 - Historical environmental data
 
 This enables users to monitor both real-time conditions and long-term environmental changes through interactive charts and graphs.
+![Grafana Dashboard](grafana_dashboard.png)
 
 ---
 
