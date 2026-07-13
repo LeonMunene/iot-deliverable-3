@@ -19,7 +19,7 @@
 # Question a
 
 ## Simulation
-[Simulation link]([https://wokwi.com/projects/468368687339859969](https://wokwi.com/projects/434113115355726849))
+[Simulation link](https://wokwi.com/projects/468368687339859969](https://wokwi.com/projects/434113115355726849)
 ![Simulation Photo](simulation_photo.png)
 
 
@@ -42,7 +42,7 @@ For the LCD powering on but not displaying results, we tried exchanging with oth
 ## Simulation
 
 ### Board 1:
-[Question B Board 1 Simulation with MQ-5](https://wokwi.com/projects/468368958463897601)
+[Question B Board 1 Simulation with MQ-5](https://wokwi.com/projects/468368958463897601](https://wokwi.com/projects/434113115355726849)
 
 ### Board 2:
 [Question B Board 2 Simulation with DHT-22](https://wokwi.com/projects/468369775687442433)
