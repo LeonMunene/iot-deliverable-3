@@ -131,6 +131,7 @@ The following information is recorded:
 - Overall Air Quality
 
 This creates a historical database that can be queried at any time.
+![Influx Database](influx_db.png)
 
 
 ---
